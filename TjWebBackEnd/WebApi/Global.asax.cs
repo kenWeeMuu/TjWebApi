@@ -15,13 +15,7 @@ namespace WebApi
          
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
-            //JSON 配置
-            var formatters = GlobalConfiguration.Configuration.Formatters;
-            var jsonFormatter = formatters.JsonFormatter;
-            var settings = jsonFormatter.SerializerSettings;
-            settings.Formatting = Newtonsoft.Json.Formatting.Indented;
-            settings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
-            settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+    
         }
     }
 }

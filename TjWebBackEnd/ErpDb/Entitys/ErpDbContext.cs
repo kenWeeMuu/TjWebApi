@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using ErpDb.Entitys.Auth;
 
@@ -10,7 +11,8 @@ namespace ErpDb.Entitys
 
         public ErpDbContext() : base(@"Data Source=SC-201810210901\SQLEXPRESS;Initial Catalog=ErpDb;Integrated Security=True")
         {
-
+             
+            this.Database.Log = x => Console.WriteLine(x);
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

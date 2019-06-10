@@ -5,6 +5,7 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http.Filters;
+using Autofac.Integration.WebApi;
 using ErpDb.Entitys.Auth;
 using Newtonsoft.Json;
 using WebApi.Extensions.AuthContext;
@@ -12,7 +13,7 @@ using WebApi.Manager;
 
 namespace WebApi.Filters
 {
-    public class JwtAuthenticationAttribute : Attribute, IAuthenticationFilter
+    public class JwtAuthenticationAttribute : IAutofacAuthenticationFilter   // Attribute, IAuthenticationFilter
     {
         public string Realm { get; set; }
         public bool AllowMultiple => false;

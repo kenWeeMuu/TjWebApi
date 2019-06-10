@@ -12,15 +12,24 @@ namespace WebApi.Extensions.AuthContext
 {
     public static class AuthContextService
     {
-
+        //todo 此处热修改权限后 会有问题，不过目前这种情况不存在。所以不改先
         public static User CurrentUser {
             get
             {
-              var pr =  HttpContext.Current.User as ClaimsPrincipal;
-             var id = pr.FindFirst("id").Value;
-             return currentUser(id);
+                if (_currentUser == null)
+                {
+                    var pr = HttpContext.Current.User as ClaimsPrincipal;
+                    var id = pr.FindFirst("id").Value;
+                    _currentUser = currentUser(id);
+                }
+             
+             return _currentUser;
             }
         }
+
+        private static User _currentUser { get; set; }
+
+        public static bool IsSupperAdministator => UserType.SuperAdministrator == CurrentUser.UserType;
 
 
         private static User currentUser(string id)

@@ -43,6 +43,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=4.9.2.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.9.2\lib\net45\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.WebApi, Version=4.2.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.WebApi2.4.2.1\lib\net45\Autofac.Integration.WebApi.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper, Version=8.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.8.1.1\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -97,9 +106,14 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\ApiConfig.cs" />
+    <Compile Include="App_Start\AutoMapperCfg.cs" />
     <Compile Include="Controllers\Auth\AccountController.cs" />
     <Compile Include="Controllers\Auth\LoginController.cs" />
     <Compile Include="Controllers\Auth\MenuController.cs" />
+    <Compile Include="Controllers\Auth\RoleController.cs" />
+    <Compile Include="Controllers\Auth\UserController.cs" />
+    <Compile Include="Controllers\Base\MessageController.cs" />
     <Compile Include="Controllers\TokenController.cs" />
     <Compile Include="Controllers\ValueController.cs" />
     <Compile Include="Extensions\AuthContext\AuthContextService.cs" />
@@ -115,17 +129,45 @@
     <Compile Include="Extensions\ResponseModelFactory.cs" />
     <Compile Include="Extensions\ResponseResultModel.cs" />
     <Compile Include="Filters\AddChallengeOnUnauthorizedResult.cs" />
+    <Compile Include="Filters\ApiExceptionHandler.cs" />
+    <Compile Include="Filters\ApiExceptionLogger.cs" />
     <Compile Include="Filters\AuthenticationFailureResult.cs" />
+    <Compile Include="Filters\CustomActionFilter.cs" />
     <Compile Include="Filters\HttpAuthenticationChallengeContextExtensions.cs" />
+    <Compile Include="Filters\ILogger.cs" />
     <Compile Include="Filters\JwtAuthenticationAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Manager\JwtManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModel\MenuEditViewModel.cs" />
-    <Compile Include="ViewModel\MenuRequestPayload.cs" />
-    <Compile Include="ViewModel\MenuTree.cs" />
+    <Compile Include="RequestPayload\Rbac\Icon\IconRequestPayload.cs" />
+    <Compile Include="RequestPayload\Rbac\Permission\PermissionRequestPayload.cs" />
+    <Compile Include="RequestPayload\Rbac\Role\RoleAssignPermissionPayload.cs" />
+    <Compile Include="RequestPayload\Rbac\Role\RoleRequestPayload.cs" />
+    <Compile Include="RequestPayload\Rbac\TjRequestPayload.cs" />
+    <Compile Include="RequestPayload\Rbac\User\UserRequestPayload.cs" />
+    <Compile Include="RequestPayload\RequestPayload.cs" />
+    <Compile Include="Utils\RandomHelper.cs" />
+    <Compile Include="ViewModel\Rbac\DncMenu\MenuCreateViewModel.cs" />
+    <Compile Include="ViewModel\Rbac\DncMenu\MenuEditViewModel.cs" />
+    <Compile Include="RequestPayload\Rbac\Menu\MenuRequestPayload.cs" />
+    <Compile Include="ViewModel\Rbac\DncMenu\MenuTree.cs" />
+    <Compile Include="ViewModel\Rbac\DncIcon\IconCreateViewModel.cs" />
+    <Compile Include="ViewModel\Rbac\DncIcon\IconImportViewModel.cs" />
+    <Compile Include="ViewModel\Rbac\DncIcon\IconJsonModel.cs" />
+    <Compile Include="ViewModel\Rbac\DncMenu\MenuItem.cs" />
+    <Compile Include="ViewModel\Rbac\DncMenu\MenuJsonModel.cs" />
+    <Compile Include="ViewModel\Rbac\DncPermission\PermissionCreateViewModel.cs" />
+    <Compile Include="ViewModel\Rbac\DncPermission\PermissionEditViewModel.cs" />
+    <Compile Include="ViewModel\Rbac\DncPermission\PermissionJsonModel.cs" />
+    <Compile Include="ViewModel\Rbac\DncPermission\PermissionRoleTree.cs" />
+    <Compile Include="ViewModel\Rbac\DncRole\RoleCreateViewModel.cs" />
+    <Compile Include="ViewModel\Rbac\DncRole\RoleJsonModel.cs" />
+    <Compile Include="ViewModel\Rbac\DncUser\SaveUserRolesViewModel.cs" />
+    <Compile Include="ViewModel\Rbac\DncUser\UserCreateViewModel.cs" />
+    <Compile Include="ViewModel\Rbac\DncUser\UserEditViewModel.cs" />
+    <Compile Include="ViewModel\Rbac\DncUser\UserJsonModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

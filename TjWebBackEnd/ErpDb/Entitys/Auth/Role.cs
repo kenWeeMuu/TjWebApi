@@ -74,7 +74,7 @@ namespace ErpDb.Entitys.Auth
         /// <summary>
         /// 最近修改者ID
         /// </summary>
-        public int ModifiedByUserId { get; set; }
+        public int ModifiedByUserId { get; set; } = default(int);
 
         /// <summary>
         /// 最近修改者姓名

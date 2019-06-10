@@ -1,26 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ErpDb.Entitys.Enums;
 
-namespace WebApi.ViewModel
+namespace WebApi.RequestPayload
 {
-    public class MenuRequestPayload : RequestPayload
-    {
-        /// <summary>
-        /// 是否已被删除
-        /// </summary>
-        public CommonEnum.IsDeleted IsDeleted { get; set; }
-
-        /// <summary>
-        /// 状态
-        /// </summary>
-        public CommonEnum.Status Status { get; set; }
-
-        /// <summary>
-        /// 上级菜单GUID
-        /// </summary>
-        public int ParentId { get; set; }
-    }
+    /// <summary>
+    /// 请求实体
+    /// </summary>
     public class RequestPayload
     {
         /// <summary>

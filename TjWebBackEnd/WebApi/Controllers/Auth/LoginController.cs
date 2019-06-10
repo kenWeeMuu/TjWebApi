@@ -23,9 +23,9 @@ namespace WebApi.Controllers.Auth
     {
         private readonly ErpDbContext _dbContext;
 
-        public LoginController()
+        public LoginController(ErpDbContext erpDbContext)
         {
-            _dbContext = new ErpDbContext();
+            _dbContext = erpDbContext;
         }
 
         [Route("api/Oauth/Auth")]

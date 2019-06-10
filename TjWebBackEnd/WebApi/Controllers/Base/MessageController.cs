@@ -5,7 +5,6 @@ using WebApi.Extensions;
 namespace WebApi.Controllers.Base
 {
     [Route("api/v1/[controller]/[action]")]
-   // [ApiAuthorize]
     public class MessageController : ApiController
     {
         /// <summary>

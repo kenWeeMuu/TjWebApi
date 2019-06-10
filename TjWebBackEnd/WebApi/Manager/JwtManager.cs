@@ -56,7 +56,7 @@ namespace WebApi.Manager
             IDateTimeProvider provider = new UtcDateTimeProvider();
             var now = provider.GetNow().AddMinutes(expireMinutes);
             var secondsSinceEpoch = Math.Round((now - UnixEpoch.Value).TotalSeconds);
-           AuthContextUser auser = new AuthContextUser(user);
+            AuthContextUser auser = new AuthContextUser(user);
             var payload = new Dictionary<string, object>
             {
                 {ClaimTypes.Name, user.LoginName},

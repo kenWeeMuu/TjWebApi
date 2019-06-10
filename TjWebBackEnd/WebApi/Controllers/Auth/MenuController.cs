@@ -1,31 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Http;
+using AutoMapper;
 using ErpDb.Entitys;
+using ErpDb.Entitys.Auth;
 using ErpDb.Entitys.Enums;
 using WebApi.Extensions;
+using WebApi.Extensions.AuthContext;
 using WebApi.Filters;
+using WebApi.RequestPayload.Rbac.Menu;
 using WebApi.ViewModel;
 
 namespace WebApi.Controllers.Auth
 {
     [Route("api/v1/rbac/[controller]/[action]")]
-    [JwtAuthentication]
+  //  [JwtAuthentication]
     public class MenuController : ApiController
     {
         private readonly ErpDbContext _dbContext;
-
+        private readonly IMapper _mapper;
 
         /// <summary>
         ///
         /// </summary>
         /// <param name="dbContext"></param>
         /// <param name="mapper"></param>
-        public MenuController()
+        public MenuController(ErpDbContext erpDbContext,IMapper mapper)
         {
-            _dbContext = new ErpDbContext();
+            _mapper = mapper;
+            _dbContext = erpDbContext;
         }
 
         /// <summary>
@@ -74,22 +80,24 @@ namespace WebApi.Controllers.Auth
         /// </summary>
         /// <param name="model">菜单视图实体</param>
         /// <returns></returns>
-        //   [HttpPost]
-        ////   [ProducesResponseType(200)]
-        //   public IHttpActionResult Create(MenuCreateViewModel model) {
-        //       using (_dbContext) {
-        //           var entity = _mapper.Map<MenuCreateViewModel, DncMenu>(model);
-        //           entity.CreatedOn = DateTime.Now;
-        //           entity.Guid = Guid.NewGuid();
-        //           entity.CreatedByUserGuid = AuthContextService.CurrentUser.Guid;
-        //           entity.CreatedByUserName = AuthContextService.CurrentUser.DisplayName;
-        //           _dbContext.DncMenu.Add(entity);
-        //           _dbContext.SaveChanges();
-        //           var response = ResponseModelFactory.CreateInstance;
-        //           response.SetSuccess();
-        //           return Ok(response);
-        //       }
-        //   }
+        [HttpPost]
+        [Route("api/v1/rbac/menu/create")]
+        //[ProducesResponseType(200)]
+        public IHttpActionResult Create(MenuCreateViewModel model) {
+            using (_dbContext) {
+
+                var entity = _mapper.Map<MenuCreateViewModel, Menu>(model);
+                entity.CreatedOn = DateTime.Now;
+                entity.Guid = Guid.NewGuid();
+                entity.CreatedByUserId = AuthContextService.CurrentUser.UserId;
+                entity.CreatedByUserName = AuthContextService.CurrentUser.DisplayName;
+                _dbContext.Menus.Add(entity);
+                _dbContext.SaveChanges();
+                var response = ResponseModelFactory.CreateInstance;
+                response.SetSuccess();
+                return Ok(response);
+            }
+        }
 
         /// <summary>
         /// 编辑菜单
@@ -151,10 +159,10 @@ namespace WebApi.Controllers.Auth
         /// 菜单树
         /// </summary>
         /// <returns></returns>
-        [Route("api/v1/rbac/menu/tree/{selected}")]
+        [Route("api/v1/rbac/menu/tree")]
       //  [Route("api/v1/rbac/menu/tree/{selected:int=-1}")]
         [HttpGet]
-        public IHttpActionResult Tree(int selected)
+        public IHttpActionResult Tree(int selected = -1)
         {
             var response = ResponseModelFactory.CreateInstance;
             var tree = LoadMenuTree(selected);
@@ -188,47 +196,44 @@ namespace WebApi.Controllers.Auth
         //       return Ok(response);
         //   }
 
-        //   /// <summary>
-        //   /// 批量操作
-        //   /// </summary>
-        //   /// <param name="command"></param>
-        //   /// <param name="ids">菜单ID,多个以逗号分隔</param>
-        //   /// <returns></returns>
-        //   [System.Web.Mvc.HttpGet]
-        //   [ProducesResponseType(200)]
-        //   public IHttpActionResult Batch(string command, string ids) {
-        //       var response = ResponseModelFactory.CreateInstance;
-        //       switch (command) {
-        //           case "delete":
-        //               if (ConfigurationManager.AppSettings.IsTrialVersion) {
-        //                   response.SetIsTrial();
-        //                   return Ok(response);
-        //               }
-        //               response = UpdateIsDelete(CommonEnum.IsDeleted.Yes, ids);
-        //               break;
+        /// <summary>
+        /// 批量操作
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="ids">菜单ID,多个以逗号分隔</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("api/v1/rbac/menu/batch")]
+        //  [ProducesResponseType(200)]
+        public IHttpActionResult Batch(string command, string ids) {
+            var response = ResponseModelFactory.CreateInstance;
+            switch (command) {
+                case "delete":
+                    response = UpdateIsDelete(CommonEnum.IsDeleted.Yes, ids);
+                    break;
 
-        //           case "recover":
-        //               response = UpdateIsDelete(CommonEnum.IsDeleted.No, ids);
-        //               break;
+                case "recover":
+                    response = UpdateIsDelete(CommonEnum.IsDeleted.No, ids);
+                    break;
 
-        //           case "forbidden":
-        //               if (ConfigurationManager.AppSettings.IsTrialVersion) {
-        //                   response.SetIsTrial();
-        //                   return Ok(response);
-        //               }
-        //               response = UpdateStatus(UserStatus.Forbidden, ids);
-        //               break;
+                case "forbidden":
+                    //if (ConfigurationManager.AppSettings.IsTrialVersion) {
+                    //    response.SetIsTrial();
+                    //    return Ok(response);
+                    //}
+                    response = UpdateStatus(UserStatus.Forbidden, ids);
+                    break;
 
-        //           case "normal":
-        //               response = UpdateStatus(UserStatus.Normal, ids);
-        //               break;
+                case "normal":
+                    response = UpdateStatus(UserStatus.Normal, ids);
+                    break;
 
-        //           default:
-        //               break;
-        //       }
+                default:
+                    break;
+            }
 
-        //       return Ok(response);
-        //   }
+            return Ok(response);
+        }
 
         /// <summary>
         /// 删除菜单
@@ -238,11 +243,13 @@ namespace WebApi.Controllers.Auth
         /// <returns></returns>
         private ResponseModel UpdateIsDelete(CommonEnum.IsDeleted isDeleted, string ids) {
             using (_dbContext) {
-                var parameters = ids.Split(',').Select((id, index) => new SqlParameter(string.Format("@p{0}", index), id)).ToList();
-                var parameterNames = string.Join(", ", parameters.Select(p => p.ParameterName));
-                var sql = string.Format("UPDATE DncMenu SET IsDeleted=@IsDeleted WHERE meenuId IN ({0})", parameterNames);
+                var parameters = ids.Split(',').Select((id, index) => new SqlParameter(string.Format("@p{0}", index), int.Parse(id))).ToList();
+                var parameterNames = string.Join(", ", parameters.Select(p => p.SqlValue));
+                var sql = string.Format($"UPDATE Menu SET IsDeleted={(int)isDeleted} WHERE menuId IN ({parameterNames})" );
                 parameters.Add(new SqlParameter("@IsDeleted", (int)isDeleted));
-                _dbContext.Database.ExecuteSqlCommand(sql, parameters);
+
+              //  _dbContext.Menus.SqlQuery(sql, parameters);
+               _dbContext.Database.ExecuteSqlCommand(sql);
                 var response = ResponseModelFactory.CreateInstance;
                 return response;
             }
@@ -254,17 +261,17 @@ namespace WebApi.Controllers.Auth
         //   /// <param name="status">菜单状态</param>
         //   /// <param name="ids">菜单ID字符串,多个以逗号隔开</param>
         //   /// <returns></returns>
-        //   private ResponseModel UpdateStatus(UserStatus status, string ids) {
-        //       using (_dbContext) {
-        //           var parameters = ids.Split(',').Select((id, index) => new SqlParameter($"@p{index}", id)).ToList();
-        //           var parameterNames = string.Join(", ", parameters.Select(p => p.ParameterName));
-        //           var sql = string.Format("UPDATE DncMenu SET Status=@Status WHERE Guid IN ({0})", parameterNames);
-        //           parameters.Add(new SqlParameter("@Status", (int)status));
-        //           _dbContext.Database.ExecuteSqlCommand(sql, parameters);
-        //           var response = ResponseModelFactory.CreateInstance;
-        //           return response;
-        //       }
-        //   }
+        private ResponseModel UpdateStatus(UserStatus status, string ids) {
+            using (_dbContext) {
+                var parameters = ids.Split(',').Select((id, index) => new SqlParameter($"@p{index}", id)).ToList();
+                var parameterNames = string.Join(", ", parameters.Select(p => p.SqlValue));
+                var sql = $"UPDATE Menu SET Status=@Status WHERE menuId IN ({parameterNames})";
+                parameters.Add(new SqlParameter("Status", (int)status));
+                _dbContext.Database.ExecuteSqlCommand(sql, new SqlParameter("Status", (int)status));
+                var response = ResponseModelFactory.CreateInstance;
+                return response;
+            }
+        }
 
         private List<MenuTree> LoadMenuTree(int selectedGuid = -1)
         {
@@ -312,7 +319,7 @@ namespace WebApi.Controllers.Auth
                         Guid = x.Guid,
                         ParentId = x.ParentId,
                         Title = x.Title,
-                        Expand = x.ParentId == -3,
+                        Expand = x.ParentId == -1,
                         Selected = selectedGuid == x.MenuId,
                         Children = build(x.MenuId),
                     })

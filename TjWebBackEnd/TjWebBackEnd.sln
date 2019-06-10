@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErpDb", "ErpDb\ErpDb.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{B8B2BCA4-466D-4A3B-9A6C-94F0B06C2CB2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiOwin", "WebApiOwin\WebApiOwin.csproj", "{5BFDC02B-C8C4-49A9-99BC-3EC574BF38F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B8B2BCA4-466D-4A3B-9A6C-94F0B06C2CB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8B2BCA4-466D-4A3B-9A6C-94F0B06C2CB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8B2BCA4-466D-4A3B-9A6C-94F0B06C2CB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BFDC02B-C8C4-49A9-99BC-3EC574BF38F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BFDC02B-C8C4-49A9-99BC-3EC574BF38F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BFDC02B-C8C4-49A9-99BC-3EC574BF38F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BFDC02B-C8C4-49A9-99BC-3EC574BF38F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

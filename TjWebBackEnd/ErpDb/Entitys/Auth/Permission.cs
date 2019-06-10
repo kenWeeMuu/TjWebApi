@@ -27,7 +27,7 @@ namespace ErpDb.Entitys.Auth
         /// <summary>
         /// 菜单GUID
         /// </summary>
-        public Guid MenuGuid { get; set; }
+        public int MenuGuid { get; set; }
 
         /// <summary>
         /// 权限名称

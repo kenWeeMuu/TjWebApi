@@ -21,7 +21,7 @@ namespace WebApi.Controllers.Auth
     /// </summary>
     // [EnableCors(origins: "*", headers: "*", methods: "*")]
    // [ApiAuthorize]
-    [JwtAuthentication]
+   // [JwtAuthentication]
     public class AccountController : ApiController
     {
         private readonly ErpDbContext _dbContext;
@@ -30,9 +30,9 @@ namespace WebApi.Controllers.Auth
         /// 
         /// </summary>
         /// <param name="dbContext"></param>
-        public AccountController()
+        public AccountController(ErpDbContext dbContext)
         {
-            _dbContext = new ErpDbContext();
+            _dbContext = dbContext;
         }
 
         //  [EnableCors(origins: "*", headers: "*", methods: "*")]

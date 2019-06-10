@@ -8,6 +8,7 @@ namespace ErpDb.Entitys.Auth
 {
     public class Menu
     {
+        public Menu() { }
 
         public int MenuId { get; set; } 
 
