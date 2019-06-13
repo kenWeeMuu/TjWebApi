@@ -40,8 +40,7 @@ namespace WebApi.Controllers.Auth
         [HttpGet]
         public IHttpActionResult Profile()
         {
-            var user2 = Thread.CurrentPrincipal;
-            var usr = HttpContext.Current.User;
+ 
             var response = ResponseModelFactory.CreateInstance;
             using (_dbContext)
             {
@@ -60,18 +59,41 @@ namespace WebApi.Controllers.Auth
 
                 //查询当前登录用户拥有的权限集合(非超级管理员)
                 var sqlPermission =
-                    @"SELECT P.Code AS PermissionCode,P.ActionCode AS PermissionActionCode,P.Name AS PermissionName,P.Type AS PermissionType,M.Name AS MenuName,M.Guid AS MenuGuid,M.Alias AS MenuAlias,M.IsDefaultRouter FROM DncRolePermissionMapping AS RPM 
-LEFT JOIN DncPermission AS P ON P.Code = RPM.PermissionCode
-INNER JOIN DncMenu AS M ON M.Guid = P.MenuGuid
-WHERE P.IsDeleted=0 AND P.Status=1 AND EXISTS (SELECT 1 FROM DncUserRoleMapping AS URM WHERE URM.UserGuid={0} AND URM.RoleCode=RPM.RoleCode)";
+                    @"SELECT P.Code AS PermissionCode,
+P.ActionCode AS PermissionActionCode,
+P.Name AS PermissionName,
+P.Type AS PermissionType,
+M.Name AS MenuName,
+M.Guid AS MenuId,M.Alias AS MenuAlias,M.IsDefaultRouter 
+FROM RolePermission AS RPM 
+LEFT JOIN Permission AS P ON P.PermissionId = RPM.Permission_PermissionId
+INNER JOIN Menu AS M ON M.MenuId = P.MenuId
+WHERE P.IsDeleted=0 AND P.Status=1 
+AND EXISTS ( SELECT 1 FROM UserRole AS UR 
+				inner join Role as r on Ur.Role_RoleId = r.RoleId and RPM.Role_RoleId = r.RoleId WHERE UR.User_UserId={0} )";
                 if (user.UserType == UserType.SuperAdministrator)
                 {
                     //如果是超级管理员
                     sqlPermission =
-                        @"SELECT P.Code AS PermissionCode,P.ActionCode AS PermissionActionCode,P.Name AS PermissionName,P.Type AS PermissionType,M.Name AS MenuName,M.Guid AS MenuGuid,M.Alias AS MenuAlias,M.IsDefaultRouter FROM Permission AS P 
-INNER JOIN Menu AS M ON M.Guid = P.MenuGuid
+                        @"SELECT P.Code AS PermissionCode,P.ActionCode AS PermissionActionCode,P.Name AS PermissionName,P.Type AS PermissionType,M.Name AS MenuName,M.Guid AS MenuId,M.Alias AS MenuAlias,M.IsDefaultRouter FROM Permission AS P 
+INNER JOIN Menu AS M ON M.MenuId = P.MenuId
 WHERE P.IsDeleted=0 AND P.Status=1";
                 }
+
+                //var queryable = from p in _dbContext.Permissions
+                //    from r in p.Roles
+                //    where r.Users.Any(u => u.UserId == 4) && p.IsDeleted == 0 && (int) p.Status == 1
+                //    select new
+                //    {
+                //        p.Code,
+                //        p.ActionCode,
+
+                //        p.Type,
+                //        p.Menu.Name,
+                //        p.Menu.MenuId,
+                //        p.Menu.Alias,
+                //        p.Menu.IsDefaultRouter
+                //    };
 
                 var permissions = _dbContext.Database.SqlQuery<PermissionWithMenu>(sqlPermission, user.UserId).ToList();
 
@@ -125,10 +147,12 @@ WHERE P.IsDeleted=0 AND P.Status=1";
         [HttpGet]
         public IHttpActionResult Menu()
         {
-            var strSql = @"SELECT M.* FROM DncRolePermissionMapping AS RPM 
-LEFT JOIN DncPermission AS P ON P.Code = RPM.PermissionCode
-INNER JOIN DncMenu AS M ON M.Guid = P.MenuGuid
-WHERE P.IsDeleted=0 AND P.Status=1 AND P.Type=0 AND M.IsDeleted=0 AND M.Status=1 AND EXISTS (SELECT 1 FROM DncUserRoleMapping AS URM WHERE URM.UserGuid=@p0 AND URM.RoleCode=RPM.RoleCode)";
+            var strSql = @"SELECT M.* FROM RolePermission AS RPM
+LEFT JOIN Permission AS P ON P.PermissionId = RPM.Permission_PermissionId
+INNER JOIN Menu AS M ON M.MenuId = P.MenuId
+WHERE P.IsDeleted= 0 AND P.Status= 1 AND P.Type= 0 AND M.IsDeleted= 0 AND M.Status= 1 
+AND EXISTS ( SELECT 1 FROM UserRole AS UR 
+				inner join Role as r on Ur.Role_RoleId = r.RoleId and RPM.Role_RoleId = r.RoleId WHERE UR.User_UserId={0} )";
             //TODO
 
 
@@ -143,7 +167,7 @@ WHERE P.IsDeleted=0 AND P.Status=1 AND P.Type=0 AND M.IsDeleted=0 AND M.Status=1
                 x.ParentId == -1).ToList();
             foreach (var root in rootMenus)
             {
-                if (menus.Exists(x => x.Guid == root.Guid))
+                if (menus.Exists(x => x.MenuId == root.MenuId))
                 {
                     continue;
                 }
@@ -152,7 +176,10 @@ WHERE P.IsDeleted=0 AND P.Status=1 AND P.Type=0 AND M.IsDeleted=0 AND M.Status=1
             }
 
             var menu = MenuItemHelper.LoadMenuTree(menus,-1);
-            return Ok(menu);
+           var needremoved= menu.Where(w => w.Children.Any() && w.ParentId == -1);
+ 
+         
+            return Ok(needremoved);
         }
     }
 

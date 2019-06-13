@@ -4,7 +4,7 @@ using WebApi.Extensions;
 
 namespace WebApi.Controllers.Base
 {
-    [Route("api/v1/[controller]/[action]")]
+    [RoutePrefix("api/v1")]
     public class MessageController : ApiController
     {
         /// <summary>
@@ -12,7 +12,7 @@ namespace WebApi.Controllers.Base
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("api/v1/message/count")]
+        [Route("message/count")]
         public IHttpActionResult Count() {
             return Ok(1);
         }
@@ -22,6 +22,7 @@ namespace WebApi.Controllers.Base
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Route("init")]
         public IHttpActionResult Init() {
             var response = ResponseModelFactory.CreateInstance;
             var unread = new object[] {
@@ -36,6 +37,7 @@ namespace WebApi.Controllers.Base
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Route("content")]
         public IHttpActionResult Content(int msgid) {
             var response = ResponseModelFactory.CreateInstance;
 
@@ -47,7 +49,7 @@ namespace WebApi.Controllers.Base
         /// 将消息标为已读
         /// </summary>
         /// <returns></returns>
-        [Route("api/v1/message/has_read/{msgid}")]
+        [Route("message/has_read/{msgid}")]
         [HttpGet]
         public IHttpActionResult HasRead(int msgid) {
             var response = ResponseModelFactory.CreateInstance;
@@ -59,7 +61,7 @@ namespace WebApi.Controllers.Base
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("api/v1/message/remove_readed/{msgid}")]
+        [Route("message/remove_readed/{msgid}")]
         public IHttpActionResult RemoveRead(int msgid) {
             var response = ResponseModelFactory.CreateInstance;
             return Ok(response);
@@ -70,7 +72,7 @@ namespace WebApi.Controllers.Base
         /// </summary>
         /// <returns></returns>
         [HttpGet ]
-        [Route("api/v1/message/restore/{msgid}")]
+        [Route("message/restore/{msgid}")]
         public IHttpActionResult Restore(int msgid) {
             var response = ResponseModelFactory.CreateInstance;
             return Ok(response);

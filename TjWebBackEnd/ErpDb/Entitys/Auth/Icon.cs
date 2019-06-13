@@ -1,90 +1,87 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using ErpDb.Entitys.Enums;
 
-namespace WebApi.ViewModel
+namespace ErpDb.Entitys.Auth
 {
-    /// <summary>
-    /// 权限实体类
-    /// </summary>
-    public class PermissionEditViewModel
+    public class  Icon
     {
         /// <summary>
-        /// 权限编码
+        ///
         /// </summary>
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+        /// <summary>
+        /// 图标名称
+        /// </summary>
+        [Required]
+      
         public string Code { get; set; }
 
         /// <summary>
-        /// 菜单GUID
+        /// 图标的大小，单位是 px
         /// </summary>
-        public int MenuId { get; set; }
+ 
+        public string Size { get; set; }
 
         /// <summary>
-        /// 菜单名称
+        /// 图标颜色
         /// </summary>
-        public string MenuName { get; set; }
+     
+        public string Color { get; set; }
 
         /// <summary>
-        /// 权限名称
+        /// 自定义图标
         /// </summary>
-        public string Name { get; set; }
+ 
+        public string Custom { get; set; }
 
         /// <summary>
-        /// 权限操作码
+        ///
         /// </summary>
-        public string ActionCode { get; set; }
-
-        /// <summary>
-        /// 图标(可选)
-        /// </summary>
-        public string Icon { get; set; }
-
-        /// <summary>
-        /// 描述信息
-        /// </summary>
+ 
         public string Description { get; set; }
 
         /// <summary>
-        /// 状态
+        ///
         /// </summary>
         public CommonEnum.Status Status { get; set; }
 
         /// <summary>
-        /// 是否已删
+        ///
         /// </summary>
         public CommonEnum.IsDeleted IsDeleted { get; set; }
 
         /// <summary>
-        /// 权限类型(0:菜单,1:按钮/操作/功能等)
-        /// </summary>
-        public CommonEnum.PermissionType Type { get; set; }
-
-        /// <summary>
-        /// 创建时间
+        ///
         /// </summary>
         public DateTime CreatedOn { get; set; }
 
         /// <summary>
-        /// 创建者ID
+        ///
         /// </summary>
         public int CreatedByUserId { get; set; }
 
         /// <summary>
-        /// 创建者姓名
+        ///
         /// </summary>
         public string CreatedByUserName { get; set; }
 
         /// <summary>
-        /// 最近修改时间
+        ///
         /// </summary>
         public DateTime? ModifiedOn { get; set; }
 
         /// <summary>
-        /// 最近修改者ID
+        ///
         /// </summary>
         public int ModifiedByUserId { get; set; }
 
         /// <summary>
-        /// 最近修改者
+        ///
         /// </summary>
         public string ModifiedByUserName { get; set; }
     }

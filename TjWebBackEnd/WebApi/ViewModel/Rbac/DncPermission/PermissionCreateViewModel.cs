@@ -16,7 +16,7 @@ namespace WebApi.ViewModel
         /// <summary>
         /// 菜单GUID
         /// </summary>
-        public Guid MenuGuid { get; set; }
+        public int MenuId { get; set; }
 
         /// <summary>
         /// 权限名称

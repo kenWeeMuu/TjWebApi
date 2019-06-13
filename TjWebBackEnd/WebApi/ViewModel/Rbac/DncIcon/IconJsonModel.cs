@@ -56,7 +56,7 @@ namespace WebApi.ViewModel
         /// <summary>
         ///
         /// </summary>
-        public Guid CreatedByUserGuid { get; set; }
+        public int CreatedByUserId { get; set; }
 
         /// <summary>
         ///
@@ -71,7 +71,7 @@ namespace WebApi.ViewModel
         /// <summary>
         ///
         /// </summary>
-        public Guid? ModifiedByUserGuid { get; set; }
+        public int ModifiedByUserId { get; set; }
 
         /// <summary>
         ///

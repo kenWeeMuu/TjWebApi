@@ -54,7 +54,7 @@ namespace WebApi
 
         public ApiConfig SetCors()
         {
-            _config.SetCorsPolicyProviderFactory(new CorsPolicyFactory());
+            _config.SetCorsPolicyProviderFactory(new CorsPolicyFactory(new MyCorsPolicyAttribute()));
             //  var cors = new EnableCorsAttribute("localhost:9000", "*", "*");
             _config.EnableCors();
 
@@ -131,8 +131,17 @@ namespace WebApi
                  cfg.CreateMap<RoleCreateViewModel, Role>();
                  cfg.CreateMap<Role, RoleCreateViewModel>();
 
-  
-               //  cfg.CreateMap<Role, RoleCreateViewModel>();
+                     
+                  cfg.CreateMap<Permission, PermissionJsonModel>();
+                  cfg.CreateMap<Permission, PermissionEditViewModel>();
+
+
+                  cfg.CreateMap<PermissionCreateViewModel, Permission>();
+
+                  cfg.CreateMap<Icon, IconJsonModel>();
+                   cfg.CreateMap<Icon, IconCreateViewModel>();
+                   cfg.CreateMap<IconCreateViewModel, Icon>();
+                  //  cfg.CreateMap<Role, RoleCreateViewModel>();
             });
 
 

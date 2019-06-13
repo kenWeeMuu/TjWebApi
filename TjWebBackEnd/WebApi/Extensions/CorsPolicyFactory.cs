@@ -36,7 +36,12 @@ namespace WebApi.Extensions
 
     public class CorsPolicyFactory : ICorsPolicyProviderFactory
     {
-        ICorsPolicyProvider _provider = new MyCorsPolicyAttribute();
+        private readonly ICorsPolicyProvider _provider;
+
+        public CorsPolicyFactory(MyCorsPolicyAttribute provider)
+        {
+            this._provider = provider;
+        }
 
         public ICorsPolicyProvider GetCorsPolicyProvider(HttpRequestMessage request) {
             return _provider;

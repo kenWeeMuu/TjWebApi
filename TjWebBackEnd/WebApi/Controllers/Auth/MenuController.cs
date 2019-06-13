@@ -44,7 +44,9 @@ namespace WebApi.Controllers.Auth
         {
             using (_dbContext)
             {
-                var query = _dbContext.Menus.AsQueryable();
+                 
+                var query = _dbContext.Menus.AsNoTracking().AsQueryable();
+           
                 if (!string.IsNullOrEmpty(payload.Kw))
                 {
                     query = query.Where(x => x.Name.Contains(payload.Kw.Trim()) || x.Url.Contains(payload.Kw.Trim()));
@@ -65,12 +67,12 @@ namespace WebApi.Controllers.Auth
                 {
                     query = query.Where(x => x.ParentId == payload.ParentId);
                 }
-
-                var list = query.OrderBy(x => x.MenuId).Paged(payload.CurrentPage, payload.PageSize).ToList();
+             
+                var list = query.OrderBy(x=>x.ParentId).Paged(payload.CurrentPage, payload.PageSize) ;
                 var totalCount = query.Count();
                 // var data = list.Select(_mapper.Map<DncMenu, MenuJsonModel>);
                 var response = ResponseModelFactory.CreateResultInstance;
-                response.SetData(list, totalCount);
+                response.SetData(list.ToList(), totalCount);
                 return Ok(response);
             }
         }
@@ -81,7 +83,7 @@ namespace WebApi.Controllers.Auth
         /// <param name="model">菜单视图实体</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("api/v1/rbac/menu/create")]
+        [Route("menu/create")]
         //[ProducesResponseType(200)]
         public IHttpActionResult Create(MenuCreateViewModel model) {
             using (_dbContext) {
@@ -104,7 +106,7 @@ namespace WebApi.Controllers.Auth
         /// </summary>
         /// <param name="guid">菜单ID</param>
         /// <returns></returns>
-        [Route("api/v1/rbac/menu/edit/{menuId}")]
+        [Route("menu/edit/{menuId}")]
         [HttpGet]
         //[ProducesResponseType(200)]
         public IHttpActionResult Edit(int menuId)
@@ -121,7 +123,7 @@ namespace WebApi.Controllers.Auth
             }
         }
 
-        [Route("api/v1/rbac/menu/edit")]
+        [Route("menu/edit")]
         [HttpPost]
         public IHttpActionResult Edit(MenuEditViewModel model)
         {
@@ -159,16 +161,18 @@ namespace WebApi.Controllers.Auth
         /// 菜单树
         /// </summary>
         /// <returns></returns>
-        [Route("api/v1/rbac/menu/tree")]
+        [Route("~/api/v1/rbac/menu/tree/{selected:int=-1}")]
       //  [Route("api/v1/rbac/menu/tree/{selected:int=-1}")]
         [HttpGet]
-        public IHttpActionResult Tree(int selected = -1)
+        public IHttpActionResult Tree(int selected)
         {
             var response = ResponseModelFactory.CreateInstance;
             var tree = LoadMenuTree(selected);
             response.SetData(tree);
             return Ok(response);
         }
+
+        
 
         /// <summary>
         /// 删除菜单
@@ -275,8 +279,8 @@ namespace WebApi.Controllers.Auth
 
         private List<MenuTree> LoadMenuTree(int selectedGuid = -1)
         {
-            var temp = _dbContext.Menus
-                .Where(x => x.IsDeleted == CommonEnum.IsDeleted.No && x.Status == CommonEnum.Status.Normal).ToList()
+            var temp = _dbContext.Menus.AsNoTracking()
+                .Where(x => x.IsDeleted == CommonEnum.IsDeleted.No && x.Status == CommonEnum.Status.Normal) 
                 .Select(x => new MenuTree
                 {
                     MenuId = x.MenuId,

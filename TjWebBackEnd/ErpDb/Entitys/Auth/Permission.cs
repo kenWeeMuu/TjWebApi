@@ -24,10 +24,11 @@ namespace ErpDb.Entitys.Auth
       //  [Column(TypeName = "nvarchar(20)")]
         public string Code { get; set; }
 
-        /// <summary>
-        /// 菜单GUID
-        /// </summary>
-        public int MenuGuid { get; set; }
+
+
+        public Guid MenuGuid { get; set; }
+
+
 
         /// <summary>
         /// 权限名称
@@ -99,11 +100,19 @@ namespace ErpDb.Entitys.Auth
         /// </summary>
         public string ModifiedByUserName { get; set; }
 
+
+        // Foreign key
+        /// <summary>
+        /// 菜单GUID
+        /// </summary>
+        public int MenuId { get; set; }
+        // Navigation properties
         /// <summary>
         /// 关联的菜单
         /// </summary>
-         public Menu Menu { get; set; }
+        public virtual Menu Menu { get; set; }
 
+        // Navigation property
         /// <summary>
         /// 权限所属的角色集合
         /// </summary>

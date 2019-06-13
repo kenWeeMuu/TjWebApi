@@ -16,14 +16,17 @@ namespace WebApi.Extensions.AuthContext
         public static User CurrentUser {
             get
             {
-                if (_currentUser == null)
-                {
-                    var pr = HttpContext.Current.User as ClaimsPrincipal;
-                    var id = pr.FindFirst("id").Value;
-                    _currentUser = currentUser(id);
-                }
-             
-             return _currentUser;
+                //   if (_currentUser == null)
+                //   {
+                //       var pr = HttpContext.Current.User as ClaimsPrincipal;
+                //       var id = pr.FindFirst("id").Value;
+                //       _currentUser = currentUser(id);
+                //   }
+
+                //return _currentUser;
+                var pr = HttpContext.Current.User as ClaimsPrincipal;
+                var id = pr.FindFirst("id").Value;
+               return currentUser(id);
             }
         }
 

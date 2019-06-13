@@ -54,7 +54,7 @@ namespace WebApi.Manager
         public static string GenerateToken(User user, int expireMinutes = 20)
         {
             IDateTimeProvider provider = new UtcDateTimeProvider();
-            var now = provider.GetNow().AddMinutes(expireMinutes);
+            var now = provider.GetNow().AddHours(expireMinutes);
             var secondsSinceEpoch = Math.Round((now - UnixEpoch.Value).TotalSeconds);
             AuthContextUser auser = new AuthContextUser(user);
             var payload = new Dictionary<string, object>
