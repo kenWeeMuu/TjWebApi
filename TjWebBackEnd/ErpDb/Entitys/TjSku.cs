@@ -10,7 +10,7 @@ namespace ErpDb.Entitys
         [Column(Order = 0)]
         public int Id { get; set; }
 
-        [Key]
+        [Required]
         [Column(Order = 1)]
         [StringLength(80)]
         public string SkuCode { get; set; }

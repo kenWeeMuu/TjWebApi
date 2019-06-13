@@ -8,11 +8,11 @@ namespace ErpDb.Entitys
     public partial class TjCustomer
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column(Order = 0)]
         public int Id { get; set; }
 
-        [Key]
-        [Column(Order = 1)]
+
         [StringLength(30)]
         public string Name { get; set; }
 
@@ -34,8 +34,8 @@ namespace ErpDb.Entitys
         [StringLength(50)]
         public string Industry { get; set; }
 
-        public Guid? Owner { get; set; }
+        public int Owner { get; set; }
 
-        public Guid? ServiceBy { get; set; }
+        public int ServiceBy { get; set; }
     }
 }

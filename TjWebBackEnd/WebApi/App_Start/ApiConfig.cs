@@ -39,7 +39,7 @@ namespace WebApi
 
             _config.Formatters.Clear();
             _config.Formatters.Add(new JsonMediaTypeFormatter());
-
+            
             _config.Formatters.JsonFormatter.SerializerSettings.ContractResolver
                 = new CamelCasePropertyNamesContractResolver();
 
@@ -80,8 +80,8 @@ namespace WebApi
 
         public ApiConfig ConfigureExceptionHandling()
         {
-            _config.Services.Replace(typeof(IExceptionHandler), new ApiExceptionHandler());
-            _config.Services.Add(typeof(IExceptionLogger), new ApiExceptionLogger(new Logger()));
+          //  _config.Services.Replace(typeof(IExceptionHandler), new ApiExceptionHandler());
+          //  _config.Services.Add(typeof(IExceptionLogger), new ApiExceptionLogger(new Logger()));
 
             return this;
         }

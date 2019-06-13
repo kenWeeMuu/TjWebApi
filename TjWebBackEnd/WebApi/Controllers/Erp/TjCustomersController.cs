@@ -1,129 +1,131 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Web.Http;
 using System.Web.Http.Description;
+using AutoMapper;
 using ErpDb.Entitys;
+using WebApi.Extensions;
+using WebApi.Extensions.AuthContext;
+using WebApi.RequestPayload.Rbac;
 
 namespace WebApi.Controllers.Erp
 {
-    public class TjCustomersController : ApiController
+    [RoutePrefix("api/v1/erp")]
+    public class TjCustomerController : ApiController
     {
-        private ErpDbContext db = new ErpDbContext();
+        private   ErpDbContext _dbContext;
+        private   IMapper mapper;
 
-        // GET: api/TjCustomers
-        public IQueryable<TjCustomer> GetTjCustomers()
+ 
+
+        public TjCustomerController(ErpDbContext dbContext, IMapper mapper)
         {
-            return db.TjCustomers;
+            _dbContext = dbContext;
+            this.mapper = mapper;
         }
-
-        // GET: api/TjCustomers/5
-        [ResponseType(typeof(TjCustomer))]
-        public IHttpActionResult GetTjCustomer(int id)
+        [Route("customer/list")]
+        [HttpPost ]
+        public IHttpActionResult List(TjRequestPayload payload)
         {
-            TjCustomer tjCustomer = db.TjCustomers.Find(id);
-            if (tjCustomer == null)
+            var response = ResponseModelFactory.CreateResultInstance;
+            if (string.IsNullOrEmpty(payload.Guid))
             {
-                return NotFound();
+                response.SetError("你想干什么?");
+                return Ok(response);
             }
 
-            return Ok(tjCustomer);
-        }
+            var query = _dbContext.TjCustomers.AsNoTracking().AsQueryable();
+            //            if (payload.FirstSort != null) {
+            //                query = query.OrderBy(payload.FirstSort.Field, payload.FirstSort.Direct == "DESC");
+            //            }
 
-        // PUT: api/TjCustomers/5
-        [ResponseType(typeof(void))]
-        public IHttpActionResult PutTjCustomer(int id, TjCustomer tjCustomer)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
-            if (id != tjCustomer.Id)
+            if (AuthContextService.IsSupperAdministator)
             {
-                return BadRequest();
-            }
-
-            db.Entry(tjCustomer).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TjCustomerExists(id))
+                if (payload.Kw != "")
                 {
-                    return NotFound();
+                    var list = query.Contains(payload.FirstSort.Field, payload.Kw)
+                        //TODO 可以用这里来测试全局错误日志
+                        .OrderByDescending(x => x.Id)
+                        .Paged(payload.CurrentPage, payload.PageSize);
+                    var totalCount = list.Count();
+                    response.SetData(list, totalCount);
                 }
                 else
                 {
-                    throw;
+                    //  var list = query.OrderBy(x => x.Id).Paged(payload.CurrentPage, payload.PageSize) ;
+                    var list = query.OrderByDescending(x => x.Id).Paged(payload.CurrentPage, payload.PageSize);
+                    var totalCount = query.Count();
+                    response.SetData(list, totalCount);
                 }
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok(response);
         }
 
-        // POST: api/TjCustomers
-        [ResponseType(typeof(TjCustomer))]
-        public IHttpActionResult PostTjCustomer(TjCustomer tjCustomer)
+        [HttpPost]
+        [Route("tjcustomer/create")]
+        public IHttpActionResult Create(TjCustomer customer)
         {
-            if (!ModelState.IsValid)
+            var response = ResponseModelFactory.CreateInstance;
+
+            using (_dbContext)
             {
-                return BadRequest(ModelState);
+                customer.Owner =AuthContextService.CurrentUser.UserId;
+                _dbContext.TjCustomers.Add(customer);
+                _dbContext.SaveChanges();
             }
 
-            db.TjCustomers.Add(tjCustomer);
+            response.SetSuccess();
+            return Ok(response);
+        }
 
-            try
+
+        [HttpGet]
+        [Route("tjcustomer/edit/{id}")]
+        public IHttpActionResult Edit(int id)
+        {
+            using (_dbContext)
             {
-                db.SaveChanges();
+                var entity = _dbContext.TjCustomers.FirstOrDefault(x => x.Id == id);
+                var response = ResponseModelFactory.CreateInstance;
+                response.SetData(entity);
+                return Ok(response);
             }
-            catch (DbUpdateException)
+        }
+
+
+
+        [HttpPost]
+      [Route("tjcustomer/edit")]
+        public IHttpActionResult Edit(TjCustomer model)
+        {
+            var response = ResponseModelFactory.CreateInstance;
+
+            using (_dbContext)
             {
-                if (TjCustomerExists(tjCustomer.Id))
+                var entity = _dbContext.TjCustomers.FirstOrDefault(x => x.Id == model.Id);
+                if (entity == null)
                 {
-                    return Conflict();
+                    response.SetFailed("该客户不存在");
+                    return Ok(response);
                 }
-                else
-                {
-                    throw;
-                }
+
+                entity.Name = model.Name;
+                entity.Phone = model.Phone;
+                entity.Email = model.Email;
+                entity.Company = model.Company;
+                entity.Region = model.Region;
+                entity.Location = model.Location;
+                entity.Industry = model.Industry;
+                entity.Owner = AuthContextService.CurrentUser.UserId;
+                _dbContext.SaveChanges();
+                response = ResponseModelFactory.CreateInstance;
+                return Ok(response);
             }
-
-            return CreatedAtRoute("DefaultApi", new { id = tjCustomer.Id }, tjCustomer);
-        }
-
-        // DELETE: api/TjCustomers/5
-        [ResponseType(typeof(TjCustomer))]
-        public IHttpActionResult DeleteTjCustomer(int id)
-        {
-            TjCustomer tjCustomer = db.TjCustomers.Find(id);
-            if (tjCustomer == null)
-            {
-                return NotFound();
-            }
-
-            db.TjCustomers.Remove(tjCustomer);
-            db.SaveChanges();
-
-            return Ok(tjCustomer);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool TjCustomerExists(int id)
-        {
-            return db.TjCustomers.Count(e => e.Id == id) > 0;
         }
     }
 }
