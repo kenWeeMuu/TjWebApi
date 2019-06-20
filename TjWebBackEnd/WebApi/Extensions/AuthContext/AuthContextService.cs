@@ -39,7 +39,7 @@ namespace WebApi.Extensions.AuthContext
         {
             using (var db = new ErpDbContext())
             {
-               return  db.Users.FirstOrDefault(x => x.UserId.ToString() ==  id );
+               return  db.Users.AsNoTracking().FirstOrDefault(x => x.UserId.ToString() ==  id );
             }
         }
  

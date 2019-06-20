@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Threading;
-using System.Web;
 using System.Web.Http;
-using System.Web.Http.Controllers;
 using ErpDb.Entitys;
 using ErpDb.Entitys.Auth;
 using ErpDb.Entitys.Enums;
-using Newtonsoft.Json;
 using WebApi.Extensions;
 using WebApi.Extensions.AuthContext;
-using WebApi.Filters;
 
-namespace WebApi.Controllers.Auth
+namespace WebApi.Controllers.V1.Auth
 {
     /// <summary>
     /// 
@@ -22,6 +15,7 @@ namespace WebApi.Controllers.Auth
     // [EnableCors(origins: "*", headers: "*", methods: "*")]
    // [ApiAuthorize]
    // [JwtAuthentication]
+ 
     public class AccountController : ApiController
     {
         private readonly ErpDbContext _dbContext;
@@ -101,7 +95,8 @@ WHERE P.IsDeleted=0 AND P.Status=1";
                     .ToDictionary(g => g.Key, g => g.Select(x => x.PermissionActionCode).Distinct());
                 response.SetData(new
                 {
-                    access = new string[] { },
+                    roles=new string [] { user.UserType.ToString() },
+                    access = new string[] { user.UserType.ToString()  },
                     avator = user.Avatar,
                     user_guid = user.UserId,
                     user_name = user.DisplayName,
@@ -177,8 +172,6 @@ AND EXISTS ( SELECT 1 FROM UserRole AS UR
 
             var menu = MenuItemHelper.LoadMenuTree(menus,-1);
            var needremoved= menu.Where(w => w.Children.Any() && w.ParentId == -1);
- 
-         
             return Ok(needremoved);
         }
     }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Http;
@@ -12,7 +11,7 @@ using WebApi.Extensions.AuthContext;
 using WebApi.RequestPayload.Rbac.Icon;
 using WebApi.ViewModel;
 
-namespace WebApi.Controllers.Auth
+namespace WebApi.Controllers.V1.Auth
 {
     [RoutePrefix("api/v1/rbac")]
     public class IconController : ApiController

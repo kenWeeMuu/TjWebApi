@@ -111,13 +111,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\ApiConfig.cs" />
-    <Compile Include="Controllers\Auth\AccountController.cs" />
-    <Compile Include="Controllers\Auth\IconController.cs" />
-    <Compile Include="Controllers\Auth\LoginController.cs" />
-    <Compile Include="Controllers\Auth\MenuController.cs" />
-    <Compile Include="Controllers\Auth\PermissionController.cs" />
-    <Compile Include="Controllers\Auth\RoleController.cs" />
-    <Compile Include="Controllers\Auth\UserController.cs" />
+    <Compile Include="Controllers\V1\Auth\AccountController.cs" />
+    <Compile Include="Controllers\V1\Auth\IconController.cs" />
+    <Compile Include="Controllers\V1\Auth\LoginController.cs" />
+    <Compile Include="Controllers\V1\Auth\MenuController.cs" />
+    <Compile Include="Controllers\V1\Auth\PermissionController.cs" />
+    <Compile Include="Controllers\V1\Auth\RoleController.cs" />
+    <Compile Include="Controllers\V1\Auth\UserController.cs" />
     <Compile Include="Controllers\Base\MessageController.cs" />
     <Compile Include="Controllers\Erp\TjCustomersController.cs" />
     <Compile Include="Controllers\Erp\TjSkuController.cs" />
@@ -192,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Controllers\V2\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>

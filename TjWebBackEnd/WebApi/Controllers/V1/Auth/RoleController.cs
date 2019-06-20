@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
@@ -15,7 +14,7 @@ using WebApi.RequestPayload.Rbac.Role;
 using WebApi.Utils;
 using WebApi.ViewModel;
 
-namespace WebApi.Controllers.Auth
+namespace WebApi.Controllers.V1.Auth
 {
     /// <summary>
     ///

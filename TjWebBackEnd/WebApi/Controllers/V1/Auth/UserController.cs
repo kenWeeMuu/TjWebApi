@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Configuration;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Http;
-using System.Web.Http.Description;
 using AutoMapper;
 using ErpDb.Entitys;
 using ErpDb.Entitys.Auth;
@@ -14,7 +12,7 @@ using WebApi.Extensions.AuthContext;
 using WebApi.RequestPayload.Rbac.User;
 using WebApi.ViewModel;
 
-namespace WebApi.Controllers.Auth
+namespace WebApi.Controllers.V1.Auth
 {
     /// <summary>
     ///

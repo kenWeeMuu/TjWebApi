@@ -10,7 +10,6 @@ using ErpDb.Entitys;
 using ErpDb.Entitys.Auth;
 using Newtonsoft.Json.Serialization;
 using WebApi.Controllers;
-using WebApi.Controllers.Auth;
 using WebApi.Extensions;
 using WebApi.Filters;
 using WebApi.ViewModel;

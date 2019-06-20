@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Http;
@@ -10,11 +9,10 @@ using ErpDb.Entitys.Auth;
 using ErpDb.Entitys.Enums;
 using WebApi.Extensions;
 using WebApi.Extensions.AuthContext;
-using WebApi.Filters;
 using WebApi.RequestPayload.Rbac.Menu;
 using WebApi.ViewModel;
 
-namespace WebApi.Controllers.Auth
+namespace WebApi.Controllers.V1.Auth
 {
     [Route("api/v1/rbac/[controller]/[action]")]
   //  [JwtAuthentication]

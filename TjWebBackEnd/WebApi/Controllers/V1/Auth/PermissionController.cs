@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
@@ -11,13 +10,12 @@ using ErpDb.Entitys.Auth;
 using ErpDb.Entitys.Enums;
 using WebApi.Extensions;
 using WebApi.Extensions.AuthContext;
-using WebApi.Filters;
 using WebApi.QueryModels.DncPermission;
 using WebApi.RequestPayload.Rbac.Permission;
 using WebApi.Utils;
 using WebApi.ViewModel;
 
-namespace WebApi.Controllers.Auth
+namespace WebApi.Controllers.V1.Auth
 {
     /// <summary>
     /// 权限控制器

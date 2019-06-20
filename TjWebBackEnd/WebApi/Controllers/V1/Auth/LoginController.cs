@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Web.Http;
 using ErpDb.Entitys;
 using ErpDb.Entitys.Auth;
 using ErpDb.Entitys.Enums;
-using JWT;
-using JWT.Algorithms;
-using JWT.Serializers;
 using WebApi.Extensions;
 using WebApi.Manager;
 
-namespace WebApi.Controllers.Auth
+namespace WebApi.Controllers.V1.Auth
 {
     [AllowAnonymous]
     // [EnableCors(origins: "*", headers: "*", methods: "*")]
